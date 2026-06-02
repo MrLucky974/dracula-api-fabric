@@ -1,4 +1,4 @@
 classTweaker v1 named
 
-accessible    method    net/minecraft/client/render/item/model/BasicItemModel    <init>    (Ljava/util/List;Ljava/util/List;Lnet/minecraft/client/render/model/ModelSettings;Ljava/util/function/Function;)V
-accessible    method    net/minecraft/client/render/item/model/BasicItemModel    findRenderLayerGetter    (Ljava/util/List;)Ljava/util/function/Function;
+accessible    method    net/minecraft/client/renderer/item/BlockModelWrapper    <init>    (Ljava/util/List;Ljava/util/List;Lnet/minecraft/client/renderer/item/ModelRenderProperties;Ljava/util/function/Function;)V
+accessible    method    net/minecraft/client/renderer/item/BlockModelWrapper    detectRenderType    (Ljava/util/List;)Ljava/util/function/Function;

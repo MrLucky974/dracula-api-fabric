@@ -2,15 +2,15 @@ package io.github.mrlucky974.dracula_api.api.client.render;
 
 import com.google.gson.JsonSyntaxException;
 import io.github.mrlucky974.dracula_api.DraculaAPI;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.DefaultFramebufferSet;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelTargetBundle;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ShaderManager {
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+    private static final Minecraft CLIENT = Minecraft.getInstance();
     private static final ObjectAllocator ALLOCATOR = ObjectAllocator.TRIVIAL;
     private static final Map<Identifier, ShaderReference> SHADER_REFERENCES = new LinkedHashMap<>();
     private static final List<ShaderInstance> ACTIVE_SHADERS = new ArrayList<>();
 
-    public static void render(RenderTickCounter tickCounter) {
-        ClientPlayerEntity player = CLIENT.player;
+    public static void render(DeltaTracker tickCounter) {
+        LocalPlayer player = CLIENT.player;
         if (player == null) {
             return;
         }
@@ -66,17 +66,17 @@ public class ShaderManager {
         return true;
     }
 
-    private static PostEffectProcessor createShaderGroup(ShaderReference shaderReference) {
+    private static PostChain createShaderGroup(ShaderReference shaderReference) {
         Identifier shaderId = shaderReference.id();
         try {
-            return CLIENT.getShaderLoader().loadPostEffect(shaderId, DefaultFramebufferSet.MAIN_ONLY);
+            return CLIENT.getShaderManager().getPostChain(shaderId, LevelTargetBundle.MAIN_TARGETS);
         } catch (JsonSyntaxException jsonSyntaxException) {
             DraculaAPI.LOGGER.warn("Failed to parse shader: {}", shaderId, jsonSyntaxException);
         }
         return null;
     }
 
-    private static void fillActiveShaders(ClientPlayerEntity player, RenderTickCounter tickCounter) {
+    private static void fillActiveShaders(LocalPlayer player, DeltaTracker tickCounter) {
         ACTIVE_SHADERS.clear();
 
         for (ShaderReference shaderReference : SHADER_REFERENCES.values()) {
@@ -92,17 +92,17 @@ public class ShaderManager {
     }
 
     private static ShaderInstance createShaderInstance(ShaderReference shaderReference) {
-        PostEffectProcessor shaderGroup = createShaderGroup(shaderReference);
+        PostChain shaderGroup = createShaderGroup(shaderReference);
         return new ShaderInstance(shaderGroup);
     }
 
-    private record ShaderInstance(PostEffectProcessor postEffectProcessor) {
-        public void render(ObjectAllocator allocator, MinecraftClient client) {
+    private record ShaderInstance(PostChain postEffectProcessor) {
+        public void render(ObjectAllocator allocator, Minecraft client) {
             if (postEffectProcessor != null) {
-                Framebuffer framebuffer = client.getFramebuffer();
+                RenderTarget framebuffer = client.getMainRenderTarget();
                 FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
-                PostEffectProcessor.FramebufferSet framebufferSet = PostEffectProcessor.FramebufferSet.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer));
-                postEffectProcessor.render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, framebufferSet);
+                PostChain.TargetBundle framebufferSet = PostChain.TargetBundle.of(PostChain.MAIN_TARGET_ID, frameGraphBuilder.importExternal("main", framebuffer));
+                postEffectProcessor.addToFrame(frameGraphBuilder, framebuffer.width, framebuffer.height, framebufferSet);
                 frameGraphBuilder.run(allocator);
             }
         }

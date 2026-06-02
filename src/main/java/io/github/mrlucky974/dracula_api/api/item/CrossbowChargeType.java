@@ -1,13 +1,13 @@
 package io.github.mrlucky974.dracula_api.api.item;
 
 import com.chocohead.mm.api.ClassTinkerers;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public final class CrossbowChargeType implements StringIdentifiable {
+public final class CrossbowChargeType implements StringRepresentable {
     private final Identifier identifier;
 
     private CrossbowChargeType(Identifier identifier) {
@@ -19,7 +19,7 @@ public final class CrossbowChargeType implements StringIdentifiable {
     }
 
     public CrossbowItem.ChargeType asEnumValue() {
-        return ClassTinkerers.getEnum(CrossbowItem.ChargeType.class, asString()
+        return ClassTinkerers.getEnum(CrossbowItem.ChargeType.class, getSerializedName()
                 .toUpperCase(Locale.ROOT));
     }
 
@@ -32,11 +32,11 @@ public final class CrossbowChargeType implements StringIdentifiable {
     }
 
     public static Identifier getModelId(CrossbowChargeType type) {
-        return type.getIdentifier().withPrefixedPath("item/crossbow_");
+        return type.getIdentifier().withPrefix("item/crossbow_");
     }
 
     @Override
-    public String asString() {
-        return identifier.toUnderscoreSeparatedString();
+    public String getSerializedName() {
+        return identifier.toDebugFileName();
     }
 }

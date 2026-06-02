@@ -1,9 +1,7 @@
 package io.github.mrlucky974.dracula_api.api;
 
 import io.github.mrlucky974.dracula_api.DraculaAPI;
-import io.github.mrlucky974.dracula_api.api.util.ModUtil;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 

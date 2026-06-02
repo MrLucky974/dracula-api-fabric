@@ -2,11 +2,11 @@ package io.github.mrlucky974.dracula_api.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.mrlucky974.dracula_api.api.item.CrossbowProjectileItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 @Mixin(CrossbowItem.class)
 public abstract class CrossbowItemMixin {
     @ModifyReturnValue(
-            method = "getHeldProjectiles",
+            method = "getSupportedHeldProjectiles",
             at = @At("RETURN")
     )
     private static Predicate<ItemStack> draculaAPI$allowCustomAmmo(
@@ -28,18 +28,18 @@ public abstract class CrossbowItemMixin {
     }
 
     @Inject(
-            method = "createArrowEntity",
+            method = "createProjectile",
             at = @At("HEAD"),
             cancellable = true)
     private static void draculaAPI$shootCustomProjectileEntity(
-            World world,
+            Level world,
             LivingEntity shooter,
             ItemStack weaponStack,
             ItemStack projectileStack,
             boolean critical,
-            CallbackInfoReturnable<ProjectileEntity> cir) {
+            CallbackInfoReturnable<Projectile> cir) {
         if (projectileStack.getItem() instanceof CrossbowProjectileItem projectileItem) {
-            ProjectileEntity projectileEntity = projectileItem.createProjectileEntity(world,
+            Projectile projectileEntity = projectileItem.createProjectileEntity(world,
                     projectileStack,
                     weaponStack,
                     shooter,

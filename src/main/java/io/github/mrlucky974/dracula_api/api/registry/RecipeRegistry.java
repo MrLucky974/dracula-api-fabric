@@ -1,8 +1,8 @@
 package io.github.mrlucky974.dracula_api.api.registry;
 
 import io.github.mrlucky974.dracula_api.api.util.RegistryHelper;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public abstract class RecipeRegistry extends BaseRegistry {
     protected static <T extends RecipeType<?>> T registerType(String name, T type) {

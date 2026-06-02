@@ -1,14 +1,14 @@
 package io.github.mrlucky974.dracula_api.mixin;
 
 import io.github.mrlucky974.dracula_api.api.item.CrossbowProjectileItem;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,24 +20,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
-@Mixin(RangedWeaponItem.class)
-public abstract class RangedWeaponItemMixin {
+@Mixin(ProjectileWeaponItem.class)
+public abstract class ProjectileWeaponItemMixin {
     @Shadow
-    protected abstract ProjectileEntity createArrowEntity(World world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical);
+    protected abstract Projectile createProjectile(Level world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical);
 
     @Shadow
-    protected abstract int getWeaponStackDamage(ItemStack projectile);
+    protected abstract int getDurabilityUse(ItemStack projectile);
 
     @Shadow
-    protected abstract void shoot(LivingEntity var1, ProjectileEntity var2, int var3, float var4, float var5, float var6, @Nullable LivingEntity var7);
+    protected abstract void shootProjectile(LivingEntity var1, Projectile var2, int var3, float var4, float var5, float var6, @Nullable LivingEntity var7);
 
     @Inject(
-            method = "shootAll",
+            method = "shoot",
             at = @At(value = "HEAD"),
             cancellable = true
     )
-    private void draculaAPI$conditionalSpawn(ServerWorld world, LivingEntity shooter, Hand hand, ItemStack stack, List<ItemStack> projectiles, float speed, float divergence, boolean critical, @Nullable LivingEntity target, CallbackInfo ci) {
-        float f = EnchantmentHelper.getProjectileSpread(world, stack, shooter, 0.0f);
+    private void draculaAPI$conditionalSpawn(ServerLevel world, LivingEntity shooter, InteractionHand hand, ItemStack stack, List<ItemStack> projectiles, float speed, float divergence, boolean critical, @Nullable LivingEntity target, CallbackInfo ci) {
+        float f = EnchantmentHelper.processProjectileSpread(world, stack, shooter, 0.0f);
         float g = projectiles.size() == 1 ? 0.0f : 2.0f * f / (float)(projectiles.size() - 1);
         float h = (float)((projectiles.size() - 1) % 2) * g / 2.0f;
         float i = 1.0f;
@@ -54,7 +54,7 @@ public abstract class RangedWeaponItemMixin {
     }
 
     @Inject(
-            method = "load",
+            method = "draw",
             at = @At(value = "TAIL")
     )
     private static void draculaAPI$onProjectileLoad(ItemStack stack, ItemStack projectileStack, LivingEntity shooter, CallbackInfoReturnable<List<ItemStack>> cir) {
@@ -64,7 +64,7 @@ public abstract class RangedWeaponItemMixin {
     }
 
     @Unique
-    private boolean shootProjectile(ServerWorld world, LivingEntity shooter, Hand hand,
+    private boolean shootProjectile(ServerLevel world, LivingEntity shooter, InteractionHand hand,
                                     ItemStack weaponStack, ItemStack projectileStack,
                                     int projectileIndex, float speed, float divergence, float yaw,
                                     boolean critical, @Nullable LivingEntity target) {
@@ -76,13 +76,13 @@ public abstract class RangedWeaponItemMixin {
         }
 
         if (shouldProjectile) {
-            ProjectileEntity.spawn(createArrowEntity(world, shooter, weaponStack, projectileStack,
+            Projectile.spawnProjectile(createProjectile(world, shooter, weaponStack, projectileStack,
                             critical), world, projectileStack,
-                    projectile -> shoot(shooter, projectile, projectileIndex, speed,
+                    projectile -> shootProjectile(shooter, projectile, projectileIndex, speed,
                             divergence, yaw, target));
         }
 
-        weaponStack.damage(getWeaponStackDamage(projectileStack), shooter, hand.getEquipmentSlot());
+        weaponStack.hurtAndBreak(getDurabilityUse(projectileStack), shooter, hand.asEquipmentSlot());
         return weaponStack.isEmpty();
     }
 }

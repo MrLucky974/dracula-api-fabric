@@ -3,7 +3,7 @@ package io.github.mrlucky974.dracula_api.api.util;
 import io.github.mrlucky974.dracula_api.DraculaAPI;
 import io.github.mrlucky974.dracula_api.api.ModEntrypoint;
 import io.github.mrlucky974.dracula_api.api.ModID;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +37,6 @@ public class ModUtil {
 
     public static Identifier id(Class<? extends ModEntrypoint> modClass, String name) {
         String modId = modId(modClass);
-        return Identifier.of(modId, name);
+        return Identifier.fromNamespaceAndPath(modId, name);
     }
 }

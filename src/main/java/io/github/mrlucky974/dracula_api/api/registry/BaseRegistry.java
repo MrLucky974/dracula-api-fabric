@@ -2,7 +2,7 @@ package io.github.mrlucky974.dracula_api.api.registry;
 
 import io.github.mrlucky974.dracula_api.api.ModRegistry;
 import io.github.mrlucky974.dracula_api.api.util.ModUtil;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.lang.reflect.Modifier;
 

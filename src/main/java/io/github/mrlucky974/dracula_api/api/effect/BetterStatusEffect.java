@@ -1,19 +1,19 @@
 package io.github.mrlucky974.dracula_api.api.effect;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.particle.ParticleEffect;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.core.particles.ParticleOptions;
 import org.jspecify.annotations.Nullable;
 
-public abstract class BetterStatusEffect extends StatusEffect
+public abstract class BetterStatusEffect extends MobEffect
         implements EffectApplyCallback, EffectRemoveCallback {
-    public BetterStatusEffect(StatusEffectCategory category, int color) {
+    public BetterStatusEffect(MobEffectCategory category, int color) {
         super(category, color);
     }
 
-    public BetterStatusEffect(StatusEffectCategory category, int color, ParticleEffect particleEffect) {
+    public BetterStatusEffect(MobEffectCategory category, int color, ParticleOptions particleEffect) {
         super(category, color, particleEffect);
     }
 

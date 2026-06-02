@@ -1,6 +1,6 @@
 package io.github.mrlucky974.dracula_api.api.item;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.Collections;

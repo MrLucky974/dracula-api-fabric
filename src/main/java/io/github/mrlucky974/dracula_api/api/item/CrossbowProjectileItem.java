@@ -1,19 +1,19 @@
 package io.github.mrlucky974.dracula_api.api.item;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public interface CrossbowProjectileItem {
-    default boolean shoot(ServerWorld world, LivingEntity shooter, Hand hand,
-                         ItemStack weaponStack, ItemStack projectileStack,
-                         int projectileIndex, float speed, float divergence, float yaw,
-                         boolean critical, @Nullable LivingEntity target) {
+    default boolean shoot(ServerLevel world, LivingEntity shooter, InteractionHand hand,
+                          ItemStack weaponStack, ItemStack projectileStack,
+                          int projectileIndex, float speed, float divergence, float yaw,
+                          boolean critical, @Nullable LivingEntity target) {
         return false;
     }
 
@@ -22,7 +22,7 @@ public interface CrossbowProjectileItem {
 
     }
 
-    default ProjectileEntity createProjectileEntity(World world, ItemStack projectileStack, ItemStack weaponStack, LivingEntity shooter, double x, double y, double z, boolean critical) {
+    default Projectile createProjectileEntity(Level world, ItemStack projectileStack, ItemStack weaponStack, LivingEntity shooter, double x, double y, double z, boolean critical) {
         return null;
     }
 

@@ -32,10 +32,10 @@ public final class CrossbowChargeTypeBootstrap {
         );
 
         for (CrossbowChargeType type : CrossbowChargeTypeBootstrap.values()) {
-            String name = type.asString();
+            String name = type.getSerializedName();
             builder.addEnum(name.toUpperCase(Locale.ROOT), name);
 
-            DraculaAPI.LOGGER.info("Registering crossbow charge type: {}", type.asString());
+            DraculaAPI.LOGGER.info("Registering crossbow charge type: {}", type.getSerializedName());
         }
 
         builder.build();

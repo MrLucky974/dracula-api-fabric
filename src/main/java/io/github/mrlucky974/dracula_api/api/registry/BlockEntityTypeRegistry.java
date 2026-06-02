@@ -2,9 +2,9 @@ package io.github.mrlucky974.dracula_api.api.registry;
 
 import io.github.mrlucky974.dracula_api.api.util.RegistryHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BlockEntityTypeRegistry extends BaseRegistry {

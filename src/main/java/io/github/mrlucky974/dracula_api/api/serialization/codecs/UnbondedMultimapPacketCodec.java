@@ -3,18 +3,18 @@ package io.github.mrlucky974.dracula_api.api.serialization.codecs;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Map;
 
 public record UnbondedMultimapPacketCodec<B extends ByteBuf, K, V>(
-        PacketCodec<? super B, K> keyCodec,
-        PacketCodec<? super B, V> elementCodec
-) implements PacketCodec<B, Multimap<K, V>> {
+        StreamCodec<? super B, K> keyCodec,
+        StreamCodec<? super B, V> elementCodec
+) implements StreamCodec<B, Multimap<K, V>> {
 
     public static <B extends ByteBuf, K, V> UnbondedMultimapPacketCodec<B, K, V> packetCodec(
-            final PacketCodec<? super B, K> keyCodec,
-            final PacketCodec<? super B, V> elementCodec
+            final StreamCodec<? super B, K> keyCodec,
+            final StreamCodec<? super B, V> elementCodec
     ) {
         return new UnbondedMultimapPacketCodec<>(keyCodec, elementCodec);
     }

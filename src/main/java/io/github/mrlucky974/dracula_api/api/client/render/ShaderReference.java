@@ -1,15 +1,15 @@
 package io.github.mrlucky974.dracula_api.api.client.render;
 
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.resources.Identifier;
 
 public final class ShaderReference {
     private final Identifier identifier;
     private final RenderCondition renderCondition;
 
     private ShaderReference(String namespace, String name, RenderCondition renderCondition) {
-        this(Identifier.of(namespace, name), renderCondition);
+        this(Identifier.fromNamespaceAndPath(namespace, name), renderCondition);
     }
 
     private ShaderReference(Identifier identifier, RenderCondition renderCondition) {
@@ -37,7 +37,7 @@ public final class ShaderReference {
         return new ShaderReference(namespace, name, renderCondition);
     }
 
-    public boolean shouldRender(ClientPlayerEntity player, RenderTickCounter tickCounter) {
+    public boolean shouldRender(LocalPlayer player, DeltaTracker tickCounter) {
         RenderCondition.Context context = new RenderCondition.Context(player, tickCounter);
         return renderCondition.shouldRender(context);
     }

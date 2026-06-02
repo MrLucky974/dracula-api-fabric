@@ -6,10 +6,10 @@
   "mixins": [
     "CrossbowItemMixin",
     "LivingEntityMixin",
-    "RangedWeaponItemMixin"
+    "ProjectileWeaponItemMixin"
   ],
   "client": [
-    "client.ChargeTypePropertyMixin",
+    "client.ChargeMixin",
     "client.GameRendererMixin"
   ],
   "injectors": {
